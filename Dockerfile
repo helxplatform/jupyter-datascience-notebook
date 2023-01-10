@@ -21,3 +21,5 @@ USER root
 
 RUN fix-permissions /etc/jupyter/ "${HOME}" "${CONDA_DIR}" "${JULIA_PKGDIR}"
 
+USER $NB_USER
+
