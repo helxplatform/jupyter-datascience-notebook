@@ -1,4 +1,4 @@
-FROM jupyter/datascience-notebook
+FROM jupyter/datascience-notebook:x86_64-notebook-6.5.1
 
 ARG NB_USER="jovyan"
 ARG NB_UID="30000"
