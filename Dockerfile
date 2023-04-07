@@ -1,4 +1,5 @@
-FROM jupyter/datascience-notebook:x86_64-notebook-6.5.1
+ARG BASE_IMAGE_TAG=x86_64-notebook-6.5.1
+FROM jupyter/datascience-notebook:$BASE_IMAGE_TAG
 
 ARG NB_USER="jovyan"
 ARG NB_UID="30000"
@@ -19,7 +20,8 @@ ENV PATH="${CONDA_DIR}/bin:${PATH}" \
 
 USER root
 
+COPY root /
 RUN fix-permissions /etc/jupyter/ "${HOME}" "${CONDA_DIR}" "${JULIA_PKGDIR}"
 
 USER $NB_USER
-
+CMD ["/init.sh"]
