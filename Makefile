@@ -12,8 +12,8 @@ export $(shell sed 's/=.*//' $(cnf))
 # HELP
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
-.PHONY: help build build-nc run up stop release publish publish-latest \
-	publish-version tag tag-latest tag-version docker-clean 
+.PHONY: help build build-nc build-kaniko run run-kaniko up stop release \
+	publish publish-latest publish-version tag tag-latest tag-version docker-clean 
 
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -30,11 +30,30 @@ build-nc: ## Build the image without caching.
 		--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
 		-t ${APP_NAME} .
 
+build-kaniko: ## Build the image with Kaniko.
+		./create-image-registry-auth-file.sh
+		docker run \
+			-v $(PWD)/.image-registry-auth-config.json:/kaniko/.docker/config.json:ro \
+    		-v $(PWD):/workspace \
+    		gcr.io/kaniko-project/executor:latest \
+    		--dockerfile Dockerfile \
+    		--destination "$(IMAGE_REPO)/$(APP_NAME):$(TAG)" \
+    		--context dir:///workspace/
+		dd if=/dev/urandom of=.image-registry-auth-config.json bs=10 count=20
+		rm .image-registry-auth-config.json
+		echo "WARNING: The file/dir permission changes don't seem to be kept in the kaniko-built image."
+
 run: ## Run container on port configured in `config.env`
 	mkdir -p ./host
 	docker run -i -t --rm --env-file=./run.env -u $(UID):$(GID) \
 	  -v $(PWD)/host:/host -p=$(CONTAINER_PORT):$(FORWARDING_PORT) \
 	  --name="$(APP_NAME)" $(APP_NAME) $(ENTRYPOINT)
+
+run-kaniko: ## Run container on port configured in `config.env` using remote image built by Kaniko.
+	mkdir -p ./host
+	docker run -i -t --rm --env-file=./run.env -u $(UID):$(GID) \
+	  -v $(PWD)/host:/host -p=$(CONTAINER_PORT):$(FORWARDING_PORT) \
+	  --name="$(APP_NAME)" $(IMAGE_REPO)/$(APP_NAME):$(TAG) $(ENTRYPOINT)
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
 
