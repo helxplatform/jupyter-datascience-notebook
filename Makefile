@@ -74,7 +74,7 @@ publish-version: tag-version ## Publish the `{version}` taged container to ECR
 	docker push $(IMAGE_REPO)/$(APP_NAME):$(TAG)
 
 # Docker tagging
-tag: tag-latest tag-version ## Generate container tags for the `{version}` ans `latest` tags
+tag: tag-latest tag-version ## Generate container tags for the `{version}` and `latest` tags
 
 tag-latest: ## Generate container `{version}` tag
 	@echo 'create tag latest'

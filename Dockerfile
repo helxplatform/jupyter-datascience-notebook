@@ -1,9 +1,5 @@
-ARG BASE_IMAGE_TAG=x86_64-notebook-6.5.1
-FROM jupyter/datascience-notebook:$BASE_IMAGE_TAG
-
-ARG NB_USER="jovyan"
-ARG NB_UID="30000"
-ARG NB_GID="1136"
+ARG BASE_IMAGE_TAG=latest
+FROM containers.renci.org/helxplatform/jupyter/docker-stacks/datascience-notebook:$BASE_IMAGE_TAG
 
 # Configure environment
 ENV CONDA_DIR=/opt/conda \
@@ -21,7 +17,7 @@ ENV PATH="${CONDA_DIR}/bin:${PATH}" \
 USER root
 
 COPY root /
-RUN fix-permissions /etc/jupyter/ "${HOME}" "${CONDA_DIR}" "${JULIA_PKGDIR}"
+RUN fix-permissions /home
 
 USER $NB_USER
 CMD ["/init.sh"]
