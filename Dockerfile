@@ -1,5 +1,6 @@
+ARG BASE_IMAGE=containers.renci.org/helxplatform/jupyter/docker-stacks/datascience-notebook
 ARG BASE_IMAGE_TAG=latest
-FROM containers.renci.org/helxplatform/jupyter/docker-stacks/datascience-notebook:$BASE_IMAGE_TAG
+FROM $BASE_IMAGE:$BASE_IMAGE_TAG
 
 USER root
 COPY root /
