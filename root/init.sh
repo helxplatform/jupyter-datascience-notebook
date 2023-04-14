@@ -14,7 +14,7 @@ USER=${USER-"jovyan"}
 DELETE_DEFAULT_USER_HOME_IF_UNUSED=${DELETE_DEFAULT_USER_HOME_IF_UNUSED-"yes"}
 DEFAULT_USER="jovyan"
 declare -i DEFAULT_UID=1000
-declare -i DEFAULT_GID=100
+declare -i DEFAULT_GID=0
 declare -i CURRENT_UID=`id -u`
 declare -i CURRENT_GID=`id -g`
 
