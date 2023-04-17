@@ -1,6 +1,6 @@
 ## Introduction
 
-This project creates a [Jupyter datascience-notebook](https://github.com/jupyter/docker-stacks) docker image that is meant to run within our HeLx platofrm.  It uses the datascience-notebook image as it's base image.
+This project creates a [Jupyter scipy-notebook](https://github.com/jupyter/docker-stacks) docker image that is meant to run within our HeLx platofrm.  It uses the scipy-notebook image as it's base image.
 
 ## Configuring
 
