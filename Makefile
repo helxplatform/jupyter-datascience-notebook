@@ -13,7 +13,7 @@ export $(shell sed 's/=.*//' $(cnf))
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help build build-nc build-kaniko run run-kaniko up stop release \
-	publish publish-latest publish-version tag tag-latest tag-version docker-clean 
+	publish publish-latest publish-version publish-short-hash tag tag-latest tag-version tag-short-hash docker-clean 
 
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -63,7 +63,7 @@ stop: ## Stop and remove a running container
 release: build-nc publish ## Make a release by building and publishing the `{version}` ans `latest` tagged containers to ECR
 
 # Docker publish
-publish: publish-latest publish-version ## Publish the `{version}` ans `latest` tagged containers to ECR
+publish: publish-latest publish-version publish-short-hash ## Publish the `{version}` ans `latest` tagged containers to ECR
 
 publish-latest: tag-latest ## Publish the `latest` taged container to ECR
 	@echo 'publish latest to $(IMAGE_REPO)'
@@ -73,16 +73,24 @@ publish-version: tag-version ## Publish the `{version}` taged container to ECR
 	@echo 'publish $(VERSION) to $(IMAGE_REPO)'
 	docker push $(IMAGE_REPO)/$(APP_NAME):$(TAG)
 
-# Docker tagging
-tag: tag-latest tag-version ## Generate container tags for the `{version}` and `latest` tags
+publish-short-hash: tag-short-hash ## Publish the short-hash taged container to ECR
+	@echo 'publish $(VERSION) to $(IMAGE_REPO)'
+	docker push $(IMAGE_REPO)/$(APP_NAME):$(shell git log -1 --pretty=%h)
 
-tag-latest: ## Generate container `{version}` tag
+# Docker tagging
+tag: tag-latest tag-version tag-short-hash ## Generate container tags for the `{version}` and `latest` tags
+
+tag-latest: ## Generate container `latest` tag
 	@echo 'create tag latest'
 	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):latest
 
-tag-version: ## Generate container `latest` tag
+tag-version: ## Generate container `{version}` tag
 	@echo 'create tag $(VERSION)'
 	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):$(TAG)
+
+tag-short-hash: ## Generate container short-hash tag created from last commit
+	@echo 'create tag $(VERSION)'
+	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):$(shell git log -1 --pretty=%h)
 
 docker-clean: ## Prune unused images, containers, and networks from the local Docker system.
 	docker system prune -f
