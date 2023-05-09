@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# If USER variable is set then container is being tested locally, else the
-# NB_USER variable should be available when running with Tcyho.
+set -eoux pipefail
+
+# The USER variable will be set if this container is created with Tycho, on
+# most (if not all) local environments USER will also be set.  If USER is not
+# set then use the NB_USER variable, which is set in the Dockerfile.
 if [ -z "${USER+x}" ]; then
   echo "USER is not set, setting it to $NB_USER"
   USER=$NB_USER
@@ -11,8 +14,9 @@ else
 fi
 
 USER=${USER-"jovyan"}
-DELETE_DEFAULT_USER_HOME_IF_UNUSED=${DELETE_DEFAULT_USER_HOME_IF_UNUSED-"yes"}
 DEFAULT_USER="jovyan"
+HOME=/home/$USER
+DELETE_DEFAULT_USER_HOME_IF_UNUSED=${DELETE_DEFAULT_USER_HOME_IF_UNUSED-"yes"}
 declare -i DEFAULT_UID=1000
 declare -i DEFAULT_GID=0
 declare -i CURRENT_UID=`id -u`
@@ -42,7 +46,6 @@ if [ $CURRENT_UID -ne 0 ]; then
   fi
 fi
 
-HOME=/home/$USER
 mkdir -p $HOME
 # Copy default environment setup files if they don't already exist.
 if [ ! -f $HOME/.bashrc ]; then
@@ -57,6 +60,16 @@ fi
 
 # Change CWD to /home/$USER so it is the starting point for shells in jupyter.
 cd $HOME
+
+# Add other init scripts in $HELX_SCRIPTS_DIR with ".sh" as their extension.
+# To run in a certain order, name them appropriately.
+HELX_SCRIPT_DIR=/helx
+INIT_SCRIPTS_TO_RUN=$(ls -1 $HELX_SCRIPT_DIR/*.sh) || true
+for INIT_SCRIPT in $INIT_SCRIPTS_TO_RUN
+do
+  echo "Running $INIT_SCRIPT"
+  $INIT_SCRIPT  
+done
 
 # The default for XDG_CACHE_HOME to use /home/jovyan/.cache and jupyter will
 # create the directory if it doesn't exist.

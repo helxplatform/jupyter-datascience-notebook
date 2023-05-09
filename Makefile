@@ -65,16 +65,16 @@ release: build-nc publish ## Make a release by building and publishing the `{ver
 # Docker publish
 publish: publish-latest publish-version publish-short-hash ## Publish the `{version}` ans `latest` tagged containers to ECR
 
-publish-latest: tag-latest ## Publish the `latest` taged container to ECR
+publish-latest: tag-latest ## Publish the `latest` tagged container to ECR
 	@echo 'publish latest to $(IMAGE_REPO)'
 	docker push $(IMAGE_REPO)/$(APP_NAME):latest
 
-publish-version: tag-version ## Publish the `{version}` taged container to ECR
-	@echo 'publish $(VERSION) to $(IMAGE_REPO)'
+publish-version: tag-version ## Publish the `{TAG}` tagged container to ECR
+	@echo 'publish $(TAG) to $(IMAGE_REPO)'
 	docker push $(IMAGE_REPO)/$(APP_NAME):$(TAG)
 
-publish-short-hash: tag-short-hash ## Publish the short-hash taged container to ECR
-	@echo 'publish $(VERSION) to $(IMAGE_REPO)'
+publish-short-hash: tag-short-hash ## Publish the short-hash tagged container to ECR
+	@echo 'publish $(shell git log -1 --pretty=%h) to $(IMAGE_REPO)'
 	docker push $(IMAGE_REPO)/$(APP_NAME):$(shell git log -1 --pretty=%h)
 
 # Docker tagging
@@ -84,12 +84,12 @@ tag-latest: ## Generate container `latest` tag
 	@echo 'create tag latest'
 	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):latest
 
-tag-version: ## Generate container `{version}` tag
-	@echo 'create tag $(VERSION)'
+tag-version: ## Generate container `{TAG}` tag
+	@echo 'create tag $(TAG)'
 	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):$(TAG)
 
 tag-short-hash: ## Generate container short-hash tag created from last commit
-	@echo 'create tag $(VERSION)'
+	@echo 'create tag $(shell git log -1 --pretty=%h)'
 	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):$(shell git log -1 --pretty=%h)
 
 docker-clean: ## Prune unused images, containers, and networks from the local Docker system.
