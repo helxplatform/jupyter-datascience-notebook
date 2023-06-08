@@ -40,7 +40,10 @@ export XDG_CACHE_HOME=$HOME/.cache
 
 # Run "jupyter -h" to see some options (notebook, server, lab, etc.).  To get more
 # options run "jupyter server --help-all".
-jupyter lab --IdentityProvider.token= --ServerApp.ip='*' \
-    --ServerApp.base_url=${NB_PREFIX} --ServerApp.allow_origin="*" \
-    --ServerApp.root_dir="/home/$USER" --no-browser \
+jupyter lab \
+    --IdentityProvider.token= \
+    --ServerApp.ip='*' \
+    --ServerApp.base_url=${NB_PREFIX} \
+    --ServerApp.allow_origin="*" \
+    --ServerApp.root_dir="/home/$USER" \
     --ServerApp.default_url=${NB_PREFIX}/lab
