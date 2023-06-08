@@ -24,6 +24,19 @@ declare -i CURRENT_GID=`id -g`
 
 echo "running as UID=$CURRENT_UID GID=$CURRENT_GID"
 
+# Change CWD to /home/$USER so it is the starting point for shells in jupyter.
+cd $HOME
+
+# Add other init scripts in $HELX_SCRIPTS_DIR with ".sh" as their extension.
+# To run in a certain order, name them appropriately.
+HELX_SCRIPT_DIR=/helx
+INIT_SCRIPTS_TO_RUN=$(ls -1 $HELX_SCRIPT_DIR/*.sh) || true
+for INIT_SCRIPT in $INIT_SCRIPTS_TO_RUN
+do
+  echo "Running init script $INIT_SCRIPT"
+  $INIT_SCRIPT  
+done
+
 if [ $CURRENT_UID -ne 0 ]; then
   echo "not running as root"
   if [[ $CURRENT_UID -ne $DEFAULT_UID || "$USER" != "$DEFAULT_USER" ]]; then
@@ -58,26 +71,16 @@ if [ ! -f $HOME/.profile ]; then
     cp /etc/skel/.profile $HOME/.profile
 fi
 
-# Change CWD to /home/$USER so it is the starting point for shells in jupyter.
-cd $HOME
-
-# Add other init scripts in $HELX_SCRIPTS_DIR with ".sh" as their extension.
-# To run in a certain order, name them appropriately.
-HELX_SCRIPT_DIR=/helx
-INIT_SCRIPTS_TO_RUN=$(ls -1 $HELX_SCRIPT_DIR/*.sh) || true
-for INIT_SCRIPT in $INIT_SCRIPTS_TO_RUN
-do
-  echo "Running $INIT_SCRIPT"
-  $INIT_SCRIPT  
-done
-
 # The default for XDG_CACHE_HOME to use /home/jovyan/.cache and jupyter will
 # create the directory if it doesn't exist.
 export XDG_CACHE_HOME=$HOME/.cache
 
 # Run "jupyter -h" to see some options (notebook, server, lab, etc.).  To get more
-# options run "jupyter server --help-all".
-jupyter lab --IdentityProvider.token= --ServerApp.ip='*' \
-    --ServerApp.base_url=${NB_PREFIX} --ServerApp.allow_origin="*" \
-    --ServerApp.root_dir="/home/$USER" --no-browser \
+# options run "jupyter lab --help-all".
+jupyter lab \
+    --IdentityProvider.token= \
+    --ServerApp.ip='*' \
+    --ServerApp.base_url=${NB_PREFIX} \
+    --ServerApp.allow_origin="*" \
+    --ServerApp.root_dir="/home/$USER" \
     --ServerApp.default_url=${NB_PREFIX}/lab
