@@ -34,31 +34,31 @@ help: ## This help.
 .DEFAULT_GOAL := help
 
 build: ## Build the image.
-	    docker build --pull \
+	docker build --pull \
 		--build-arg BASE_IMAGE=${BASE_IMAGE} \
 		--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
 		-t ${APP_NAME} .
 
 build-nc: ## Build the image without caching.
-	    docker build --pull --no-cache \
+	docker build --pull --no-cache \
 		--build-arg BASE_IMAGE=${BASE_IMAGE} \
 		--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
 		-t ${APP_NAME} .
 
 build-kaniko: ## Build the image with Kaniko.
-		./create-image-registry-auth-file.sh
-		docker run \
-			-v $(PWD)/.image-registry-auth-config.json:/kaniko/.docker/config.json:ro \
-    		-v $(PWD):/workspace \
-    		gcr.io/kaniko-project/executor:latest \
-    		--dockerfile Dockerfile \
-			--build-arg BASE_IMAGE=${BASE_IMAGE} \
-			--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
-    		--destination "$(IMAGE_REPO)/$(APP_NAME):$(TAG)" \
-    		--context dir:///workspace/
-		dd if=/dev/urandom of=.image-registry-auth-config.json bs=10 count=20
-		rm .image-registry-auth-config.json
-		echo "WARNING: The file/dir permission changes don't seem to be kept in the kaniko-built image."
+	./create-image-registry-auth-file.sh
+	docker run \
+		-v $(PWD)/.image-registry-auth-config.json:/kaniko/.docker/config.json:ro \
+		-v $(PWD):/workspace \
+		gcr.io/kaniko-project/executor:latest \
+		--dockerfile Dockerfile \
+		--build-arg BASE_IMAGE=${BASE_IMAGE} \
+		--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
+		--destination "$(IMAGE_REPO)/$(APP_NAME):$(TAG)" \
+		--context dir:///workspace/
+	dd if=/dev/urandom of=.image-registry-auth-config.json bs=10 count=20
+	rm .image-registry-auth-config.json
+	echo "WARNING: The file/dir permission changes don't seem to be kept in the kaniko-built image."
 
 run: ## Run container on port configured in `config.env`
 	mkdir -p ./host
