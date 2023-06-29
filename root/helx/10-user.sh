@@ -4,7 +4,7 @@ set -eoux pipefail
 
 DELETE_DEFAULT_USER_HOME_IF_UNUSED=${DELETE_DEFAULT_USER_HOME_IF_UNUSED-"yes"}
 declare -i DEFAULT_UID=1000
-declare -i DEFAULT_GID=0
+declare -i DEFAULT_GID=100
 declare -i CURRENT_UID=`id -u`
 declare -i CURRENT_GID=`id -g`
 
