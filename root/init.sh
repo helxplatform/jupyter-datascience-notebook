@@ -15,7 +15,8 @@ fi
 
 export USER=${USER-"jovyan"}
 export DEFAULT_USER="jovyan"
-export HOME=/home/$USER
+export HOME="/home/$USER"
+export NB_ROOT_DIR=${NB_ROOT_DIR-$HOME}
 
 # Change to the root directory to mitigate problems if the current working
 # directory is deleted.
@@ -45,5 +46,5 @@ jupyter lab \
     --ServerApp.ip='*' \
     --ServerApp.base_url=${NB_PREFIX} \
     --ServerApp.allow_origin="*" \
-    --ServerApp.root_dir="/home/$USER" \
+    --ServerApp.root_dir=${NB_ROOT_DIR} \
     --ServerApp.default_url=${NB_PREFIX}/lab
