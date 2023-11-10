@@ -9,6 +9,7 @@ COPY root /
 RUN apt-get update && apt-get -y install pkg-config && \
     mamba install --yes \
         matplotlib \
+        psycopg \
         pyodbc \
         numpy \
         tableone \
