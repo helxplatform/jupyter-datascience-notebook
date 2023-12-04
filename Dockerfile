@@ -11,6 +11,7 @@ RUN apt-get update && apt-get -y install pkg-config && \
         matplotlib \
         psycopg \
         pyodbc \
+        pyperformance \
         numpy \
         tableone \
         xgboost
