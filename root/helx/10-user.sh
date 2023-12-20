@@ -2,6 +2,7 @@
 
 set -eoux pipefail
 
+HELX_GROUP_NAME=${HELX_GROUP_NAME-"helx"}
 DELETE_DEFAULT_USER_HOME_IF_UNUSED=${DELETE_DEFAULT_USER_HOME_IF_UNUSED-"yes"}
 declare -i DEFAULT_UID=1000
 declare -i DEFAULT_GID=0
@@ -29,6 +30,19 @@ if [ $CURRENT_UID -ne 0 ]; then
 
   else
     echo "running as uid that is $DEFAULT_UID and USER is not \"$DEFAULT_USER\""
+  fi
+fi
+
+# Get second supplementary group id with id command.  This is a hack for when
+# OpenShift adds supplementary group id to process but the gid doesn't exist
+# in /etc/group.  This might not work in all circumstances.
+SUPPLEMENTARY_GROUP_ID=$( id | cut -d ',' -f 2 )
+if [[ "$SUPPLEMENTARY_GROUP_ID" != "" ]]; then
+  # Check if extra supplementary group ID is in /etc/group
+  CHECK_FOR_SUP_GROUP_ID=$( grep -e "^.*:.*:$SUPPLEMENTARY_GROUP_ID:.*\$" /etc/group ) || true
+  if [[ "$CHECK_FOR_SUP_GROUP_ID" == "" ]]; then
+    # group doesn't exist, add it
+    echo "$HELX_GROUP_NAME:x:$SUPPLEMENTARY_GROUP_ID:$USER">>/etc/group
   fi
 fi
 
