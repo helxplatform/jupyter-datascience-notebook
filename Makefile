@@ -63,13 +63,14 @@ build-kaniko: ## Build the image with Kaniko.
 run: ## Run container on port configured in `config.env`
 	mkdir -p ./host
 	docker run -i -t --rm --env-file=./run.env -u $(UID):$(GID) \
-	  -v $(PWD)/host:/host -p=$(CONTAINER_PORT):$(FORWARDING_PORT) \
+	  -v $(PWD)/host:/host -p=$(FORWARDING_PORT):$(CONTAINER_PORT) \
+	  $(DOCKER_GROUP_ADD_ARG) \
 	  --name="$(APP_NAME)" $(APP_NAME) $(ENTRYPOINT)
 
 run-kaniko: ## Run container on port configured in `config.env` using remote image built by Kaniko.
 	mkdir -p ./host
 	docker run -i -t --rm --env-file=./run.env -u $(UID):$(GID) \
-	  -v $(PWD)/host:/host -p=$(CONTAINER_PORT):$(FORWARDING_PORT) \
+	  -v $(PWD)/host:/host -p=$(FORWARDING_PORT):$(CONTAINER_PORT) \
 	  --name="$(APP_NAME)" $(IMAGE_REPO)/$(APP_NAME):$(TAG) $(ENTRYPOINT)
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
