@@ -1,8 +1,9 @@
 ARG BASE_IMAGE=containers.renci.org/helxplatform/jupyter/minimal-poetry-notebook
-ARG BASE_IMAGE_TAG=0.0.1
+ARG BASE_IMAGE_TAG=0.0.2
 FROM $BASE_IMAGE:$BASE_IMAGE_TAG
 
 USER root
+
 COPY root /
 
 # This turns off oneDNN custom operations, so that we don't see slightly different 
@@ -20,10 +21,8 @@ RUN cd $POETRY_HOME && $POETRY_HOME/bin/poetry install --no-interaction --no-ans
 # Remove Poetry files from container, as they're no longer needed
 RUN rm $POETRY_HOME/pyproject.toml $POETRY_HOME/poetry.lock
 
-RUN fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home" && \
+RUN fix-permissions "/home" && \
     chmod 664 /etc/group
 
 USER $NB_USER
 WORKDIR /
-CMD ["/init.sh"]
