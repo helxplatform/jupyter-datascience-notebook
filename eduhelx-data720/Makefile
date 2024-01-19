@@ -81,7 +81,7 @@ stop: ## Stop and remove a running container
 release: build-nc publish ## Make a release by building and publishing tagged containers to ECR
 
 # Docker publish
-publish: publish-latest publish-version publish-short-hash ## Publish tags
+publish: publish-latest publish-version ## Publish tags
 	@echo 'publish all tags to $(IMAGE_REPO)'
 	docker push -a $(IMAGE_REPO)/$(APP_NAME)
 
@@ -98,7 +98,7 @@ publish-short-hash: tag-short-hash ## Publish the short-hash tagged container to
 	docker push $(IMAGE_REPO)/$(APP_NAME):$(COMMIT_HASH)
 
 # Docker tagging
-tag: tag-latest tag-version tag-short-hash ## Generate container tags
+tag: tag-latest tag-version ## Generate container tags
 
 tag-latest: ## Generate container `latest` tag
 	@echo 'create tag latest'
@@ -111,6 +111,3 @@ tag-version: ## Generate container `{TAG}` tag
 tag-short-hash: ## Generate container short-hash tag created from last commit or current datetime if tree is dirty
 	@echo 'create tag $(COMMIT_HASH)'
 	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):$(COMMIT_HASH)
-
-docker-clean: ## Prune unused images, containers, and networks from the local Docker system.
-	docker system prune -f
