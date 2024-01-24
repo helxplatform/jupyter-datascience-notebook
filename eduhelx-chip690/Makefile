@@ -24,9 +24,7 @@ endif
 # HELP
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
-.PHONY: help build build-nc build-kaniko run run-kaniko up stop release \
-	publish publish-latest publish-version publish-short-hash \
-	tag tag-latest tag-version tag-short-hash docker-clean 
+.PHONY: help
 
 help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -81,9 +79,7 @@ stop: ## Stop and remove a running container
 release: build-nc publish ## Make a release by building and publishing tagged containers to ECR
 
 # Docker publish
-publish: publish-latest publish-version publish-short-hash ## Publish tags
-	@echo 'publish all tags to $(IMAGE_REPO)'
-	docker push -a $(IMAGE_REPO)/$(APP_NAME)
+publish: publish-latest publish-version ## Publish tags
 
 publish-latest: tag-latest ## Publish the `latest` tagged container to ECR
 	@echo 'publish latest to $(IMAGE_REPO)'
@@ -98,7 +94,7 @@ publish-short-hash: tag-short-hash ## Publish the short-hash tagged container to
 	docker push $(IMAGE_REPO)/$(APP_NAME):$(COMMIT_HASH)
 
 # Docker tagging
-tag: tag-latest tag-version tag-short-hash ## Generate container tags
+tag: tag-latest tag-version ## Generate container tags
 
 tag-latest: ## Generate container `latest` tag
 	@echo 'create tag latest'
@@ -111,6 +107,3 @@ tag-version: ## Generate container `{TAG}` tag
 tag-short-hash: ## Generate container short-hash tag created from last commit or current datetime if tree is dirty
 	@echo 'create tag $(COMMIT_HASH)'
 	docker tag $(APP_NAME) $(IMAGE_REPO)/$(APP_NAME):$(COMMIT_HASH)
-
-docker-clean: ## Prune unused images, containers, and networks from the local Docker system.
-	docker system prune -f
