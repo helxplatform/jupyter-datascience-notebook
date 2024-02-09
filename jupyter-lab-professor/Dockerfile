@@ -6,6 +6,7 @@ USER root
 
 WORKDIR /
 COPY root .
+COPY scripts ./scripts
 
 # This turns off oneDNN custom operations, so that we don't see slightly different 
 # numerical results due to floating-point round-off errors from different computation orders
