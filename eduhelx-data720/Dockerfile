@@ -1,10 +1,11 @@
 ARG BASE_IMAGE=containers.renci.org/helxplatform/jupyter/minimal-poetry-notebook
-ARG BASE_IMAGE_TAG=0.0.2
+ARG BASE_IMAGE_TAG=v0.0.3
 FROM $BASE_IMAGE:$BASE_IMAGE_TAG
 
 USER root
 
-COPY root /
+WORKDIR /
+COPY root .
 
 # This turns off oneDNN custom operations, so that we don't see slightly different 
 # numerical results due to floating-point round-off errors from different computation orders
@@ -25,4 +26,3 @@ RUN fix-permissions "/home" && \
     chmod 664 /etc/group
 
 USER $NB_USER
-WORKDIR /
