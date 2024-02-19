@@ -43,33 +43,12 @@ build-nc: ## Build the image without caching.
 		--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
 		-t ${APP_NAME} .
 
-build-kaniko: ## Build the image with Kaniko.
-		./create-image-registry-auth-file.sh
-		docker run \
-			-v $(PWD)/.image-registry-auth-config.json:/kaniko/.docker/config.json:ro \
-    		-v $(PWD):/workspace \
-    		gcr.io/kaniko-project/executor:latest \
-    		--dockerfile Dockerfile \
-			--build-arg BASE_IMAGE=${BASE_IMAGE} \
-			--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
-    		--destination "$(IMAGE_REPO)/$(APP_NAME):$(TAG)" \
-    		--context dir:///workspace/
-		dd if=/dev/urandom of=.image-registry-auth-config.json bs=10 count=20
-		rm .image-registry-auth-config.json
-		echo "WARNING: The file/dir permission changes don't seem to be kept in the kaniko-built image."
-
 run: ## Run container on port configured in `config.env`
 	mkdir -p ./host
 	docker run -i -t --rm --env-file=./run.env -u $(UID):$(GID) \
 	  -v $(PWD)/host:/host -p=$(FORWARDING_PORT):$(CONTAINER_PORT) \
 	  $(DOCKER_GROUP_ADD_ARG) \
 	  --name="$(APP_NAME)" $(APP_NAME) $(ENTRYPOINT)
-
-run-kaniko: ## Run container on port configured in `config.env` using remote image built by Kaniko.
-	mkdir -p ./host
-	docker run -i -t --rm --env-file=./run.env -u $(UID):$(GID) \
-	  -v $(PWD)/host:/host -p=$(FORWARDING_PORT):$(CONTAINER_PORT) \
-	  --name="$(APP_NAME)" $(IMAGE_REPO)/$(APP_NAME):$(TAG) $(ENTRYPOINT)
 
 up: build run ## Run container on port configured in `config.env` (Alias to run)
 
