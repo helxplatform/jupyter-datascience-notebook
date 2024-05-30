@@ -29,4 +29,7 @@ RUN jupyter server extension enable eduhelx_jupyterlab_prof
 RUN fix-permissions "/home" && \
     chmod 664 /etc/group
 
+# Temporary solution. Need to get this into the chart eventually.
+ENV GRADER_API_URL='http://grader-api:8000'
+
 USER $NB_USER
