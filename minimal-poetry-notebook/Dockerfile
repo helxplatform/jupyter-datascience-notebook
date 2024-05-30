@@ -10,7 +10,7 @@ RUN apt-get upgrade -y libc-bin locales libcurl3-gnutls
 ENV POETRY_CONFIG_DIR=/opt/poetry/.config \
     POETRY_HOME=/opt/poetry \
     POETRY_CACHE_DIR=/opt/poetry/.cache \
-    POETRY_VERSION=1.7.1
+    POETRY_VERSION=1.8.3
 
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -

@@ -7,7 +7,7 @@ readme = "README.md"
 packages = []
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 python-otter = "^0.1.0"
 otter-grader = "^4.2.0"
 ipython = "^8.10.0"

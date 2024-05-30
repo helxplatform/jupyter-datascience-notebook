@@ -1,5 +1,5 @@
 ARG BASE_IMAGE=containers.renci.org/helxplatform/jupyter/minimal-poetry-notebook
-ARG BASE_IMAGE_TAG=0.0.2
+ARG BASE_IMAGE_TAG=v0.0.3
 FROM $BASE_IMAGE:$BASE_IMAGE_TAG
 
 USER root
@@ -22,6 +22,9 @@ COPY pyproject.toml poetry.lock $POETRY_HOME/
 RUN cd $POETRY_HOME && $POETRY_HOME/bin/poetry install --no-interaction --no-ansi --no-root
 # Remove Poetry files from container, as they're no longer needed
 RUN rm $POETRY_HOME/pyproject.toml $POETRY_HOME/poetry.lock
+
+RUN pip install git+https://github.com/helxplatform/eduhelx-jupyterlab-prof-ext.git
+RUN jupyter server extension enable eduhelx_jupyterlab_prof
 
 RUN fix-permissions "/home" && \
     chmod 664 /etc/group
