@@ -26,6 +26,8 @@ RUN rm $POETRY_HOME/pyproject.toml $POETRY_HOME/poetry.lock
 RUN pip install git+https://github.com/helxplatform/eduhelx-jupyterlab-prof-ext.git
 RUN jupyter server extension enable eduhelx_jupyterlab_prof
 
+RUN pip install --upgrade git+https://github.com/helxplatform/eduhelx-utils.git@git-improve
+
 RUN fix-permissions "/home" && \
     chmod 664 /etc/group
 
