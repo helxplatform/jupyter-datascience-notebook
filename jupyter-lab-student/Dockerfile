@@ -14,10 +14,10 @@ ENV TF_ENABLE_ONEDNN_OPTS=0 \
 
 RUN sudo apt upgrade git
 
-RUN pip install git+https://github.com/helxplatform/eduhelx-jupyterlab-student-ext.git@442952445b5aaea018c09ab638026f6e400a7749
+RUN pip install git+https://github.com/helxplatform/eduhelx-jupyterlab-student-ext.git
 RUN jupyter server extension enable eduhelx_jupyterlab_student
 
-RUN pip install --upgrade git+https://github.com/helxplatform/eduhelx-utils.git@437bde76aa4ebf53b0ad6f67fe17a69cb3c2c4b1
+RUN pip install --upgrade git+https://github.com/helxplatform/eduhelx-utils.git
 
 RUN fix-permissions "/home" && \
     chmod 664 /etc/group
