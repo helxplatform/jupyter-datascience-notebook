@@ -1,5 +1,5 @@
 ARG BASE_IMAGE=containers.renci.org/helxplatform/jupyter/helx-notebook/jupyter-lab-student
-ARG BASE_IMAGE_TAG=v0.0.7
+ARG BASE_IMAGE_TAG=v0.0.8
 FROM $BASE_IMAGE:$BASE_IMAGE_TAG
 
 USER root
