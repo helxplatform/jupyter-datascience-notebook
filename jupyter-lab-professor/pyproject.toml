@@ -7,12 +7,11 @@ readme = "README.md"
 packages = []
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 python-otter = "^0.1.0"
 otter-grader = "^4.2.0"
 ipython = "^8.10.0"
 ipywidgets = "^8.0.3"
-eduhelx-utils = {git = "https://github.com/helxplatform/eduhelx-utils.git"}
 
 [build-system]
 requires = ["poetry-core"]
