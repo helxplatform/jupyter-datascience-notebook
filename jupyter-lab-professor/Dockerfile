@@ -14,6 +14,12 @@ ENV TF_ENABLE_ONEDNN_OPTS=0 \
     TF_CPP_MIN_LOG_LEVEL='2' \
     HOME_DIR=/home/jovyan
 
+# Upgrade git (even on older distro)
+RUN sudo apt update -y && \
+    sudo apt-get install software-properties-common -y && \
+    sudo add-apt-repository ppa:git-core/ppa && \
+    sudo apt install git -y
+
 # This is necessary because by default Poetry creates a virtual environment, which we don't want in production
 RUN $POETRY_HOME/bin/poetry config virtualenvs.create false
 # Copy poetry files to container
