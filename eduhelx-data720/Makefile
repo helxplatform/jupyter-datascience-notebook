@@ -35,13 +35,15 @@ build: ## Build the image.
 	    docker build --pull \
 		--build-arg BASE_IMAGE=${BASE_IMAGE} \
 		--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
-		-t ${APP_NAME} .
+		-t ${APP_NAME} \
+		--platform=linux/amd64 .
 
 build-nc: ## Build the image without caching.
 	    docker build --pull --no-cache \
 		--build-arg BASE_IMAGE=${BASE_IMAGE} \
 		--build-arg BASE_IMAGE_TAG=${BASE_IMAGE_TAG} \
-		-t ${APP_NAME} .
+		-t ${APP_NAME} \
+		--platform=linux/amd64 .
 
 build-kaniko: ## Build the image with Kaniko.
 		./create-image-registry-auth-file.sh
