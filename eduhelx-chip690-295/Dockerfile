@@ -5,6 +5,7 @@ FROM $BASE_IMAGE:$BASE_IMAGE_TAG
 USER root
 
 WORKDIR /
+COPY root .
 
 # This is necessary because by default Poetry creates a virtual environment, which we don't want in production
 RUN $POETRY_HOME/bin/poetry config virtualenvs.create false
